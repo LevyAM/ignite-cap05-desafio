@@ -1,8 +1,8 @@
-import { AppError } from "../../../../shared/errors/AppError";
-import { InMemoryUsersRepository } from "../../repositories/in-memory/InMemoryUsersRepository";
-import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
-import { ICreateUserDTO } from "../createUser/ICreateUserDTO";
-import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
+import { InMemoryUsersRepository } from "../../src/modules/users/repositories/in-memory/InMemoryUsersRepository";
+import { AuthenticateUserUseCase } from "../../src/modules/users/useCases/authenticateUser/AuthenticateUserUseCase";
+import { CreateUserUseCase } from "../../src/modules/users/useCases/createUser/CreateUserUseCase";
+import { ICreateUserDTO } from "../../src/modules/users/useCases/createUser/ICreateUserDTO";
+import { AppError } from "../../src/shared/errors/AppError";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let createUserUseCase: CreateUserUseCase;

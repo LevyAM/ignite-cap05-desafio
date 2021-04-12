@@ -2,8 +2,8 @@ import request from "supertest";
 import { Connection } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 
-import { app } from "../../../../app";
-import createConnection from "../../../../database/index";
+import { app } from "../../../src/app";
+import createConnection from "../../../src/database/index";
 
 let connection: Connection;
 

@@ -1,15 +1,21 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { AppError } from "../../../../shared/errors/AppError";
-import { InMemoryUsersRepository } from "../../../users/repositories/in-memory/InMemoryUsersRepository";
-import { CreateUserUseCase } from "../../../users/useCases/createUser/CreateUserUseCase";
-import { ICreateUserDTO } from "../../../users/useCases/createUser/ICreateUserDTO";
-import { InMemoryStatementsRepository } from "../../repositories/in-memory/InMemoryStatementsRepository";
-import { GetBalanceUseCase } from "../getBalance/GetBalanceUseCase";
-import { CreateStatementUseCase } from "./CreateStatementUseCase";
+import { InMemoryStatementsRepository } from "../../src/modules/statements/repositories/in-memory/InMemoryStatementsRepository";
+import { CreateStatementUseCase } from "../../src/modules/statements/useCases/createStatement/CreateStatementUseCase";
+import { GetBalanceUseCase } from "../../src/modules/statements/useCases/getBalance/GetBalanceUseCase";
+import { InMemoryUsersRepository } from "../../src/modules/users/repositories/in-memory/InMemoryUsersRepository";
+import { CreateUserUseCase } from "../../src/modules/users/useCases/createUser/CreateUserUseCase";
+import { ICreateUserDTO } from "../../src/modules/users/useCases/createUser/ICreateUserDTO";
+import { AppError } from "../../src/shared/errors/AppError";
 
 interface IRequest {
   user_id: string;
+}
+
+enum OperationType {
+  DEPOSIT = "deposit",
+  WITHDRAW = "withdraw",
+  TRANSFER = "transfer",
 }
 
 let getBalanceUseCase: GetBalanceUseCase;
@@ -34,10 +40,6 @@ describe("Create Statements", () => {
   });
 
   it("should be able to create a new deposit", async () => {
-    enum OperationType {
-      DEPOSIT = "deposit",
-      WITHDRAW = "withdraw",
-    }
     const userDTO: ICreateUserDTO = {
       name: "user",
       email: "email@test.com",
@@ -62,10 +64,6 @@ describe("Create Statements", () => {
   });
 
   it("should be able to create a new withdraw", async () => {
-    enum OperationType {
-      DEPOSIT = "deposit",
-      WITHDRAW = "withdraw",
-    }
     const userDTO: ICreateUserDTO = {
       name: "user",
       email: "email@test.com",
@@ -97,12 +95,53 @@ describe("Create Statements", () => {
     expect(balance.balance).toEqual(0);
   });
 
+  it("should be able to create a new transfer", async () => {
+    const userSenderDTO: ICreateUserDTO = {
+      name: "sender",
+      email: "sender@test.com",
+      password: "sender",
+    };
+
+    const userReceiverDTO: ICreateUserDTO = {
+      name: "receiver",
+      email: "receiver@test.com",
+      password: "receiver",
+    };
+
+    const sender = await createUserUseCase.execute(userSenderDTO);
+    const receiver = await createUserUseCase.execute(userReceiverDTO);
+
+    const statementDeposit = await createStatementUseCase.execute({
+      user_id: sender.id as string,
+      description: "deposit test",
+      amount: 100,
+      type: "deposit" as OperationType,
+    });
+
+    const statementTransfer = await createStatementUseCase.execute({
+      user_id: sender.id as string,
+      receiver_id: receiver.id as string,
+      description: "withdraw test",
+      amount: 50,
+      type: "transfer" as OperationType,
+    });
+
+    const iRequestStubSender = <IRequest>{ user_id: sender.id };
+    const iRequestStubReceiver = <IRequest>{ user_id: receiver.id };
+
+    const balanceSender = await getBalanceUseCase.execute(iRequestStubSender);
+    const balanceReceiver = await getBalanceUseCase.execute(
+      iRequestStubReceiver
+    );
+
+    expect(statementDeposit.amount).toEqual(100);
+    expect(statementTransfer.amount).toEqual(50);
+    expect(balanceSender.balance).toEqual(50);
+    expect(balanceReceiver.balance).toEqual(statementTransfer.amount);
+  });
+
   it("should not be able to create a withdraw > balance", async () => {
     await expect(async () => {
-      enum OperationType {
-        DEPOSIT = "deposit",
-        WITHDRAW = "withdraw",
-      }
       const userDTO: ICreateUserDTO = {
         name: "user",
         email: "email@test.com",
@@ -129,11 +168,6 @@ describe("Create Statements", () => {
 
   it("should not be able to create a deposit for a non existing user", async () => {
     await expect(async () => {
-      enum OperationType {
-        DEPOSIT = "deposit",
-        WITHDRAW = "withdraw",
-      }
-
       await createStatementUseCase.execute({
         user_id: uuidv4() as string,
         description: "deposit test",
@@ -145,11 +179,6 @@ describe("Create Statements", () => {
 
   it("should not be able to create a withdraw for a non existing user", async () => {
     await expect(async () => {
-      enum OperationType {
-        DEPOSIT = "deposit",
-        WITHDRAW = "withdraw",
-      }
-
       await createStatementUseCase.execute({
         user_id: uuidv4() as string,
         description: "withdraw test",

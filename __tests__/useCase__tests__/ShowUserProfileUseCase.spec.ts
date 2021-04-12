@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { AppError } from "../../../../shared/errors/AppError";
-import { InMemoryUsersRepository } from "../../repositories/in-memory/InMemoryUsersRepository";
-import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
-import { ICreateUserDTO } from "../createUser/ICreateUserDTO";
-import { ShowUserProfileUseCase } from "./ShowUserProfileUseCase";
+import { InMemoryUsersRepository } from "../../src/modules/users/repositories/in-memory/InMemoryUsersRepository";
+import { CreateUserUseCase } from "../../src/modules/users/useCases/createUser/CreateUserUseCase";
+import { ICreateUserDTO } from "../../src/modules/users/useCases/createUser/ICreateUserDTO";
+import { ShowUserProfileUseCase } from "../../src/modules/users/useCases/showUserProfile/ShowUserProfileUseCase";
+import { AppError } from "../../src/shared/errors/AppError";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let createUserUseCase: CreateUserUseCase;

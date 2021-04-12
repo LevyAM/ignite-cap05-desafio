@@ -7,7 +7,7 @@ export default async (host = "database"): Promise<Connection> => {
       host: process.env.NODE_ENV === "test" ? "localhost" : host,
       database:
         process.env.NODE_ENV === "test"
-          ? "db_fin_api"
+          ? "db_fin_api_test"
           : defaultOptions.database,
     })
   );

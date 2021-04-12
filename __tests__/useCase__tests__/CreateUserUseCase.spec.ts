@@ -1,8 +1,8 @@
 import { compare } from "bcryptjs";
 
-import { AppError } from "../../../../shared/errors/AppError";
-import { InMemoryUsersRepository } from "../../repositories/in-memory/InMemoryUsersRepository";
-import { CreateUserUseCase } from "./CreateUserUseCase";
+import { InMemoryUsersRepository } from "../../src/modules/users/repositories/in-memory/InMemoryUsersRepository";
+import { CreateUserUseCase } from "../../src/modules/users/useCases/createUser/CreateUserUseCase";
+import { AppError } from "../../src/shared/errors/AppError";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let createUserUseCase: CreateUserUseCase;

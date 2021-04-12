@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { AppError } from "../../../../shared/errors/AppError";
-import { InMemoryUsersRepository } from "../../../users/repositories/in-memory/InMemoryUsersRepository";
-import { CreateUserUseCase } from "../../../users/useCases/createUser/CreateUserUseCase";
-import { ICreateUserDTO } from "../../../users/useCases/createUser/ICreateUserDTO";
-import { InMemoryStatementsRepository } from "../../repositories/in-memory/InMemoryStatementsRepository";
-import { CreateStatementUseCase } from "../createStatement/CreateStatementUseCase";
-import { GetBalanceUseCase } from "./GetBalanceUseCase";
+import { InMemoryStatementsRepository } from "../../src/modules/statements/repositories/in-memory/InMemoryStatementsRepository";
+import { CreateStatementUseCase } from "../../src/modules/statements/useCases/createStatement/CreateStatementUseCase";
+import { GetBalanceUseCase } from "../../src/modules/statements/useCases/getBalance/GetBalanceUseCase";
+import { InMemoryUsersRepository } from "../../src/modules/users/repositories/in-memory/InMemoryUsersRepository";
+import { CreateUserUseCase } from "../../src/modules/users/useCases/createUser/CreateUserUseCase";
+import { ICreateUserDTO } from "../../src/modules/users/useCases/createUser/ICreateUserDTO";
+import { AppError } from "../../src/shared/errors/AppError";
 
 interface IRequest {
   user_id: string;
